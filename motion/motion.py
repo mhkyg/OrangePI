@@ -11,14 +11,14 @@ def file_get_contents(filename):
     with open(filename) as f:
         return f.read()
 
-# Raspberry Pi pin configuration:
-lcd_rs        = 24  # Note this might need to be changed to 21 for older revision Pi's.
-lcd_en        = 23
-lcd_d4        = 9
+# Orange Pi pin configuration:
+lcd_rs        = 14  
+lcd_en        = 10
+lcd_d4        = 12
 lcd_d5        = 11
-lcd_d6        = 10
-lcd_d7        = 18
-lcd_backlight = 8
+lcd_d6        = 6
+lcd_d7        = 0
+lcd_backlight = 13
 
 # Define LCD column and row size for 16x2 LCD.
 lcd_columns = 16
@@ -73,7 +73,7 @@ try:
   
   print("event atached start loop");
   while 1:
-    if (gpio.input(PIR_PIN)==1):
+    if (gpio.input(PIR_PIN)===1):
        MOTION()
     else:
       time.sleep(0.1)

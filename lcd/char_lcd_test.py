@@ -5,8 +5,8 @@ import time
 from char_lcd2 import OrangePiZero_CharLCD as LCD
 
 
-# Raspberry Pi pin configuration:
-lcd_rs        = 14  # Note this might need to be changed to 21 for older revision Pi's.
+# Orange Pi pin configuration:
+lcd_rs        = 14  
 lcd_en        = 10
 lcd_d4        = 12
 lcd_d5        = 11
