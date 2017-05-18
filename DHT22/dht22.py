@@ -43,8 +43,8 @@ class DHT22:
 
         # change to input using pull up
         #gpio.setcfg(self.__pin, gpio.INPUT, gpio.PULLUP)
-	      gpio.setcfg(self.__pin, gpio.INPUT)
-	      gpio.pullup(self.__pin, gpio.PULLUP)
+	gpio.setcfg(self.__pin, gpio.INPUT)
+	gpio.pullup(self.__pin, gpio.PULLUP)
 
 
         # collect data into an array
@@ -70,10 +70,10 @@ class DHT22:
 
         # ok, we have valid data, return it
         #print the_bytes
-      	sign = 1
-      	if (the_bytes[2]>127):
-      		the_bytes[2] = (the_bytes[2]-128)
-      		sign = -1
+	sign = 1
+	if (the_bytes[2]>127):
+		the_bytes[2] = (the_bytes[2]-128)
+		sign = -1
 		
         return DHT22Result(DHT22Result.ERR_NO_ERROR, sign*(the_bytes[2]*256+the_bytes[3])/10,(the_bytes[0]*256+the_bytes[1])/10 )
 

@@ -1,13 +1,15 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # coding=UTF-8
 #import RPi.GPIO as GPIO_detector #raspberry version
 from pyA20.gpio import gpio
 import time
 import datetime
 import locale
+import sys
+import os
 from char_lcd2 import OrangePiZero_CharLCD as LCD
 
-def file_get_contents(filename):
+def file_get_contents(filename):    
     with open(filename) as f:
         return f.read()
 
@@ -27,10 +29,10 @@ lcd_rows    = 2
 
 
 #GPIO_detector.setmode(GPIO_detector.BCM)
-PIR_PIN = 7
+PIR_PIN = 16
 #GPIO_detector.setup(PIR_PIN, GPIO_detector.IN)
 
-lcd = LCD.OrangePiZero_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
+lcd = LCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
                            lcd_columns, lcd_rows, lcd_backlight)
 lcd.create_char(0,[	2,4,14,1,15,17,15,0]); # á
 lcd.create_char(1,[	2,4,14,17,30,16,14,0]); # é
@@ -44,18 +46,18 @@ def MOTION():
   lcd.clear()
   #print("lite on")
   lcd.set_backlight(0)        
-  lcd_text = file_get_contents("../data/kijelzo.txt");
+  lcd_text = file_get_contents(os.path.dirname(os.path.abspath(__file__)) + "/../data/kijelzo.txt");
   for x in range(0, 4):
     if (x % 2) == 0 :
-      time = datetime.datetime.now().strftime('%Y-%m-%d') +' '+ datetime.datetime.now().strftime('%H:%M:%S') +'\n'+ week_days[int(datetime.datetime.now().strftime('%w'))] ;
+      time_data = datetime.datetime.now().strftime('%Y-%m-%d') +' '+ datetime.datetime.now().strftime('%H:%M:%S') +'\n'+ week_days[int(datetime.datetime.now().strftime('%w'))] ;
       lcd.clear()
-      lcd.message(time);
-      #print(ido);
+      lcd.message(time_data);
+      
     else:
       lcd.clear()                             
       lcd.message( lcd_text);
-      #print(kijelzo_szoveg);
-    time.sleep(5.0);
+    time.sleep(5.0);  
+    
       
   
   print(lcd_text);
@@ -73,17 +75,20 @@ try:
   
   print("event atached start loop");
   while 1:
-    if (gpio.input(PIR_PIN)===1):
+    if (gpio.input(PIR_PIN)==1):
        MOTION()
+       #print "motion"
+       time.sleep(0.1)
     else:
+      #print "no Motion"
       time.sleep(0.1)
     
 except KeyboardInterrupt:
   print(" Quit")
   lcd.set_backlight(1)
   #GPIO_detector.cleanup()
-except:               
-  print("Other error");
-  lcd.set_backlight(1)
-  #GPIO_detector.cleanup()
+#except:               
+#  print "Unexpected error:", sys.exc_info()[0]
+#  lcd.set_backlight(1)
+#  
                
