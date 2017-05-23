@@ -12,14 +12,14 @@ class DHT22Result:
     ERR_CRC = 2
 
     error_code = ERR_NO_ERROR
-    temperature = -1
-    humidity = -1
+    temperature = -1.0
+    humidity = -1.0
 
     def __init__(self, error_code, temperature, humidity):
         self.error_code = error_code
         self.temperature = temperature
         self.humidity = humidity
-
+        
     def is_valid(self):
         return self.error_code == DHT22Result.ERR_NO_ERROR
 
@@ -43,8 +43,8 @@ class DHT22:
 
         # change to input using pull up
         #gpio.setcfg(self.__pin, gpio.INPUT, gpio.PULLUP)
-	gpio.setcfg(self.__pin, gpio.INPUT)
-	gpio.pullup(self.__pin, gpio.PULLUP)
+      	gpio.setcfg(self.__pin, gpio.INPUT)
+      	gpio.pullup(self.__pin, gpio.PULLUP)
 
 
         # collect data into an array
@@ -74,8 +74,9 @@ class DHT22:
 	if (the_bytes[2]>127):
 		the_bytes[2] = (the_bytes[2]-128)
 		sign = -1
-		
-        return DHT22Result(DHT22Result.ERR_NO_ERROR, sign*(the_bytes[2]*256+the_bytes[3])/10,(the_bytes[0]*256+the_bytes[1])/10 )
+		    #python koncepcionalisan szar
+        #print sign*(the_bytes[2]*256+the_bytes[3])/(float(10))
+        return DHT22Result(DHT22Result.ERR_NO_ERROR, sign*(the_bytes[2]*256+the_bytes[3])/(float(10)),(the_bytes[0]*256+the_bytes[1])/(float(10)) )
 
     def __send_and_sleep(self, output, sleep):
         gpio.output(self.__pin, output)

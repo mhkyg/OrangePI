@@ -20,10 +20,10 @@ instance = dht22.DHT22(pin=PIN2)
 count = 0
 valid = 0
 while (not valid or count > 5):
-    count += 1
-    result = instance.read()
-    valid = result.is_valid()
-    if result.is_valid():
-        print("%d;%d" % (result.temperature,result.humidity))
-    else:
-	time.sleep(5)
+  count += 1
+  result = instance.read()
+  valid = result.is_valid()
+  if result.is_valid():
+    print("%.1f;%.1f" % (result.temperature,result.humidity))
+  else:
+    time.sleep(5)
