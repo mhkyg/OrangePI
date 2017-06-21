@@ -46,14 +46,14 @@ class PHP_DHT22{
     	$temperature_sign = -1; 
       $templerature_first_byte-=128;     
     }
-      
-    if ($generated_checksum !== $res[4] ) {
-
+    $humidity = ($res[0]*256+$res[1])/(10);  
+    $temperature = $temperature_sign*(($templerature_first_byte )*256+$res[3])/10;
+    if ($generated_checksum - $res[4] > 2 or $humidity>100 or $humidity<0 or $temperature > 80 or $temperature < -40) {
     	throw new Exception("Checksum error (generated:".$generated_checksum." received:".$res[4]." raw:".print_r($res,true).")");
     }
 
 
-    return array("temperature"=>$temperature_sign*(($templerature_first_byte )*256+$res[3])/10,"humidity"=>($res[0]*256+$res[1])/(10));
+    return array("temperature"=>$temperature,"humidity"=>$humidity);
   }
   /**
    *$raw_data = array of bool
@@ -70,12 +70,13 @@ class PHP_DHT22{
      $current_length = 0;
      foreach ($raw_data["results"] as $value) {
         $current_length ++;
+        /*
         if ($state == self::STATE_INIT_PULL_DOWN and $value == 0) {
           $state = self::STATE_INIT_PULL_UP;
         }
         if ($state == self::STATE_INIT_PULL_UP and $value == 1) {
           $state = self::STATE_DATA_FIRST_PULL_DOWN;
-        } 
+        }*/ 
         if ($state == self::STATE_DATA_FIRST_PULL_DOWN and $value == 0) {
           $state = self::STATE_DATA_PULL_UP;
         }
@@ -105,6 +106,7 @@ class PHP_DHT22{
 
     return $result;   	
   }
+  
   private function convertBitsToBytes($bit_array){
     $bit_string = implode("", $bit_array);
     for ($i=0;$i<(count($bit_array)/8 ); $i++) {
