@@ -74,13 +74,17 @@ try:
   #GPIO_detector.add_event_detect(PIR_PIN, GPIO_detector.RISING, callback=MOTION, bouncetime=300)
   
   print("event atached start loop");
+  count = 0
   while 1:
     if (gpio.input(PIR_PIN)==1):
-       MOTION()
-       #print "motion"
-       time.sleep(0.1)
+      count += 1;
+      if count > 1 :        
+        MOTION()
+      
+      time.sleep(0.1)
     else:
       #print "no Motion"
+      count = 0
       time.sleep(0.1)
     
 except KeyboardInterrupt:
