@@ -81,7 +81,53 @@ class PHP_GPIO{
     return $res;  	
   }
   
+  /**
+   * $port_number: 0-16
+   * return array("results"=>array of bool or null,"total_time_sec"=>float);
+   * 
+   **/
+   
   
+  function readContinous($port_number,$max_unchanged = 100){
+  	$last_gpio_state = 0;
+    $data = array();
+    $index = 0;
+    $ts = microtime(true);
+    
+    
+    $raw_data = array();
+    $read = 0;
+    while ($unchanged < $max_unchanged) {
+      $raw_data[$read] = $current = $this->getGPIOvalue($port_number);      
+      $read++;
+      if ($last_gpio_state == $current) {
+        $unchanged++;
+      }else{
+        $unchanged = 0;
+        $last_gpio_state =  $current;
+        
+      }
+    }
+    $total_time = (microtime(true)-$ts);
+    //$raw_data = array_slice($max_unchanged, 0, -$max_unchanged,true);
+    
+    return  array("results"=>$raw_data,"total_time_sec"=>$total_time);
+    
+  }
+  
+  
+  /**
+   * $values_with_timeings = array(array("value"=>1 or 0,"delay_after_microsec"=>microseconds:int) );
+   */
+  function sendBits($port,$values_with_timeings){
+    
+    foreach ($values_with_timeings as $data) {
+      
+    	$this->setGPIOvalue($port,$data["value"]);
+      usleep($data["delay_after_microsec"]);
+    }
+    
+  }  
   
   
 }
